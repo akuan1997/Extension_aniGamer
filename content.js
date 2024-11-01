@@ -15,13 +15,13 @@ function observerCallback() {
 // 初始化內容腳本功能
 function initContentScript() {
     addBlackFilterToContainerImages();
-    addHeartBelowFavorites();
+    // addTriangleBelowFavorites();
 
     // 監測 DOM 變化並更新愛心
     const domObserver = new MutationObserver((mutations) => {
         mutations.forEach(mutation => {
             if (mutation.addedNodes.length) {
-                addHeartBelowFavorites(); // 在新增節點時更新愛心
+                addBlackFilterToContainerImages(); // 在新增節點時更新愛心
             }
         });
     });
@@ -30,13 +30,6 @@ function initContentScript() {
     domObserver.observe(document.body, { childList: true, subtree: true });
 }
 
-// function addBlackFilterToContainerImages() {
-//     const containerImages = document.querySelectorAll(".container img");
-//     containerImages.forEach(img => {
-//         img.style.filter = "grayscale(100%)"; // 將圖片變為全黑
-//     });
-// }
-
 function addBlackFilterToContainerImages() {
     const containerImages = document.querySelectorAll(".container img");
     const favoriteButtons = document.querySelectorAll(".btn-card-block.btn-favorite");
@@ -44,58 +37,70 @@ function addBlackFilterToContainerImages() {
     containerImages.forEach((img, index) => {
         // 檢查對應的愛心按鈕是否為打勾狀態
         if (favoriteButtons[index] && !favoriteButtons[index].classList.contains("btn-is-active")) {
-            // 如果愛心未打勾，表示該項目可能評分低或不受歡迎，讓圖片變為全黑
             img.style.filter = "grayscale(100%)"; // 將圖片變為全黑
-            img.style.opacity = "0.15"; // 降低透明度，使其更不明顯，表示不好看或不受歡迎
-
-            // 檢查是否已經存在警告文本
-            let warningText = img.parentNode.querySelector(".warning-text");
-            if (!warningText) {
-                // 如果不存在，創建一個新的文本元素
-                warningText = document.createElement("div");
-                warningText.classList.add("warning-text"); // 設置類名以便於查找
-                warningText.textContent = "這個項目不好看，評分低"; // 您可以自定義這裡的文字
-                warningText.style.color = "red"; // 設置文字顏色
-                warningText.style.fontSize = "50px"; // 設置文字大小
-                warningText.style.textAlign = "center"; // 文字居中對齊
-
-                // 將文本元素添加到圖片的父容器中
-                img.parentNode.appendChild(warningText);
-            }
+            img.style.opacity = "0.15"; // 降低透明度，使其更不明顯
         } else {
             img.style.filter = "none"; // 如果愛心已打勾，則不改變圖片顏色
-            img.style.opacity = "1"; // 恢復透明度，表示受歡迎或好看
+            img.style.opacity = "1"; // 恢復透明度
+        }
 
-            // 如果之前添加了警告文字，則將其移除
-            const existingWarning = img.parentNode.querySelector(".warning-text");
-            if (existingWarning) {
-                img.parentNode.removeChild(existingWarning);
-            }
+        // 確保圖片的父元素是正確的容器
+        const container = img.parentNode;
+
+        // 確保父容器有相對定位
+        container.style.position = "relative";
+
+        // 檢查是否已經添加按鈕
+        if (!container.querySelector(".custom-button")) {
+            // 創建按鈕元素
+            const button = document.createElement("button");
+            button.classList.add("custom-button"); // 添加類名以便查找
+            button.style.position = "absolute"; // 絕對定位
+            button.style.bottom = "200px"; // 右下角距離底部10px
+            button.style.right = "3px"; // 右下角距離右邊10px
+            button.style.zIndex = "10"; // 確保按鈕在最上層
+            button.style.backgroundColor = "transparent"; // 透明背景
+            button.style.border = "none"; // 去掉邊框
+            button.style.cursor = "pointer"; // 指針樣式
+            button.style.pointerEvents = "auto"; // 啟用按鈕的點擊事件
+            img.style.pointerEvents = "none"; // 禁用圖片的點擊事件
+
+            // 添加倒讚圖標
+            const downvoteIcon = document.createElement("i");
+            downvoteIcon.className = "material-icons"; // 使用 Material Icons
+            downvoteIcon.style.color = "black"; // 初始顏色
+            downvoteIcon.textContent = "thumb_down"; // 倒讚圖標
+
+            button.appendChild(downvoteIcon); // 將圖標添加到按鈕中
+
+            // 添加鼠標懸停事件以改變顏色
+            button.addEventListener("mouseover", () => {
+                downvoteIcon.style.color = "red"; // 懸停時顯示為紅色
+                console.log("滑鼠停留倒讚按鈕！"); // 這裡可以執行其他動作
+            });
+
+            button.addEventListener("mouseout", () => {
+                downvoteIcon.style.color = "black"; // 恢復為黑色
+                console.log("滑鼠離開倒讚按鈕！"); // 這裡可以執行其他動作
+            });
+
+            // 添加點擊事件以執行某些操作
+            button.addEventListener("click", (event) => {
+                event.stopPropagation(); // 防止事件冒泡
+                event.preventDefault(); // 阻止圖片的默認點擊行為
+                console.log("倒讚按鈕被點擊！"); // 這裡可以執行其他動作
+
+                // 暫停三秒後執行的操作
+                setTimeout(() => {
+                    console.log("三秒已過，執行後續操作");
+                    // 在這裡添加您的後續代碼
+                }, 3000); // 三秒 = 3000毫秒
+            });
+
+            // 將按鈕添加到圖片的父容器中
+            container.appendChild(button);
         }
     });
-}
-
-// 在每個愛心按鈕下方新增一個愛心
-function addHeartBelowFavorites() {
-    const favoriteButtons = document.querySelectorAll(".btn-card-block.btn-favorite");
-
-    favoriteButtons.forEach(button => {
-        // 檢查是否已有愛心存在，避免重複添加
-        const existingHeart = button.nextSibling;
-        if (!existingHeart || !existingHeart.classList.contains("additional-heart")) {
-            // 創建新的愛心元素
-            const newHeart = document.createElement("div");
-            newHeart.classList.add("additional-heart");
-            newHeart.style.display = "flex";
-            newHeart.style.justifyContent = "center";
-            newHeart.style.marginTop = "5px";
-            newHeart.innerHTML = "<i class='material-icons' style='color: red;'>favorite</i>"; // 使用 Material Icons 顯示愛心
-
-            // 將新愛心插入到現有愛心按鈕的下一個兄弟節點下方
-            button.parentNode.insertBefore(newHeart, existingHeart ? existingHeart.nextSibling : button.nextSibling);
-        }
-    });
-    console.log("頁面內容已更新。");
 }
 
 // 啟動 URL 觀察器並立即檢查
