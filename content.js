@@ -56,8 +56,8 @@ function addBlackFilterToContainerImages() {
             const button = document.createElement("button");
             button.classList.add("custom-button"); // 添加類名以便查找
             button.style.position = "absolute"; // 絕對定位
-            button.style.bottom = "200px"; // 右下角距離底部10px
-            button.style.right = "3px"; // 右下角距離右邊10px
+            button.style.top = "40px"; // 距離上 ?px
+            button.style.right = "3px"; // 距離右 ?px
             button.style.zIndex = "10"; // 確保按鈕在最上層
             button.style.backgroundColor = "transparent"; // 透明背景
             button.style.border = "none"; // 去掉邊框
@@ -68,7 +68,7 @@ function addBlackFilterToContainerImages() {
             // 添加倒讚圖標
             const downvoteIcon = document.createElement("i");
             downvoteIcon.className = "material-icons"; // 使用 Material Icons
-            downvoteIcon.style.color = "black"; // 初始顏色
+            downvoteIcon.style.color = "gray"; // 初始顏色
             downvoteIcon.textContent = "thumb_down"; // 倒讚圖標
 
             button.appendChild(downvoteIcon); // 將圖標添加到按鈕中
@@ -80,7 +80,7 @@ function addBlackFilterToContainerImages() {
             });
 
             button.addEventListener("mouseout", () => {
-                downvoteIcon.style.color = "black"; // 恢復為黑色
+                downvoteIcon.style.color = "gray"; // 恢復為黑色
                 console.log("滑鼠離開倒讚按鈕！"); // 這裡可以執行其他動作
             });
 
