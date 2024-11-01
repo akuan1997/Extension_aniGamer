@@ -29,18 +29,23 @@ function initContentScript() {
     // 開始監測整個 body 的變化
     domObserver.observe(document.body, { childList: true, subtree: true });
 }
-function addBlackFilterToContainerImages() {
-    const containerImages = document.querySelectorAll(".theme-img-block img");
 
-    containerImages.forEach((img) => {
-        const imageId = img.getAttribute("data-src") || img.getAttribute("src");
-        let isDisliked = localStorage.getItem(`disliked-${imageId}`);
+function addBlackFilterToContainerImages() {
+    const containerLinks = document.querySelectorAll(".theme-list-main");
+
+    containerLinks.forEach((link) => {
+        const href = link.getAttribute("href");
+        const snMatch = href.match(/sn=(\d+)/); // 提取 sn 的數字部分
+        if (!snMatch) return;
+        const sn = snMatch[1];
+        let isDisliked = localStorage.getItem(`disliked-${sn}`);
 
         // 根據 localStorage 的紀錄設置灰階效果
+        const img = link.querySelector(".theme-img");
         img.style.filter = isDisliked ? "grayscale(100%)" : "none";
         img.style.opacity = isDisliked ? "0.15" : "1";
 
-        const container = img.closest(".theme-img-block");
+        const container = link.querySelector(".theme-img-block");
 
         if (!container.querySelector(".custom-button")) {
             const button = document.createElement("button");
@@ -57,16 +62,16 @@ function addBlackFilterToContainerImages() {
 
             const downvoteIcon = document.createElement("i");
             downvoteIcon.style.color = "gray";
-            downvoteIcon.style.fontSize = "24px"; // 調整字體大小
-            downvoteIcon.textContent = "X"; // 使用 "X" 代替 thumb_down 圖標
+            downvoteIcon.style.fontSize = "24px";
+            downvoteIcon.textContent = "X";
 
             button.appendChild(downvoteIcon);
 
             button.addEventListener("mouseover", () => {
-                downvoteIcon.style.color = "#FF6F61"; // 懸停時顯示為紅色
+                downvoteIcon.style.color = "#FF6F61";
             });
             button.addEventListener("mouseout", () => {
-                downvoteIcon.style.color = isDisliked ? "#FF6F61" : "gray"; // 恢復顏色
+                downvoteIcon.style.color = isDisliked ? "#FF6F61" : "gray";
             });
 
             button.addEventListener("click", (event) => {
@@ -77,14 +82,12 @@ function addBlackFilterToContainerImages() {
                 isDisliked = !isDisliked;
 
                 if (isDisliked) {
-                    // 設定倒讚狀態
-                    localStorage.setItem(`disliked-${imageId}`, "true");
-                    downvoteIcon.style.color = "#FF6F61"; // 改為紅色
+                    localStorage.setItem(`disliked-${sn}`, "true");
+                    downvoteIcon.style.color = "#FF6F61";
                     console.log("倒讚");
                 } else {
-                    // 取消倒讚狀態
-                    localStorage.removeItem(`disliked-${imageId}`);
-                    downvoteIcon.style.color = "gray"; // 恢復灰色
+                    localStorage.removeItem(`disliked-${sn}`);
+                    downvoteIcon.style.color = "gray";
                     console.log("取消倒讚");
                 }
 
@@ -96,7 +99,6 @@ function addBlackFilterToContainerImages() {
         }
     });
 }
-
 // 更新圖片的樣式
 function updateImageStyle(img, isDisliked) {
     // 根據當前狀態更新圖片樣式
