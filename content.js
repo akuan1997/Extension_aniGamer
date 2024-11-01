@@ -44,11 +44,33 @@ function addBlackFilterToContainerImages() {
     containerImages.forEach((img, index) => {
         // 檢查對應的愛心按鈕是否為打勾狀態
         if (favoriteButtons[index] && !favoriteButtons[index].classList.contains("btn-is-active")) {
+            // 如果愛心未打勾，表示該項目可能評分低或不受歡迎，讓圖片變為全黑
             img.style.filter = "grayscale(100%)"; // 將圖片變為全黑
-            img.style.opacity = "0.15"; // 降低透明度，使其更不明顯
+            img.style.opacity = "0.15"; // 降低透明度，使其更不明顯，表示不好看或不受歡迎
+
+            // 檢查是否已經存在警告文本
+            let warningText = img.parentNode.querySelector(".warning-text");
+            if (!warningText) {
+                // 如果不存在，創建一個新的文本元素
+                warningText = document.createElement("div");
+                warningText.classList.add("warning-text"); // 設置類名以便於查找
+                warningText.textContent = "這個項目不好看，評分低"; // 您可以自定義這裡的文字
+                warningText.style.color = "red"; // 設置文字顏色
+                warningText.style.fontSize = "50px"; // 設置文字大小
+                warningText.style.textAlign = "center"; // 文字居中對齊
+
+                // 將文本元素添加到圖片的父容器中
+                img.parentNode.appendChild(warningText);
+            }
         } else {
             img.style.filter = "none"; // 如果愛心已打勾，則不改變圖片顏色
-            img.style.opacity = "1"; // 恢復透明度
+            img.style.opacity = "1"; // 恢復透明度，表示受歡迎或好看
+
+            // 如果之前添加了警告文字，則將其移除
+            const existingWarning = img.parentNode.querySelector(".warning-text");
+            if (existingWarning) {
+                img.parentNode.removeChild(existingWarning);
+            }
         }
     });
 }
