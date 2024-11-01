@@ -7,7 +7,8 @@ function addLocationObserver(callback) {
 
 // 主觀察回調，檢查 URL 並初始化頁面更新
 function observerCallback() {
-    if (window.location.href.startsWith('https://ani.gamer.com.tw/animeList.php')) {
+    if (window.location.href.startsWith('https://ani.gamer.com.tw/animeList.php') ||
+        window.location.href.startsWith('https://ani.gamer.com.tw/search.php')) {
         initContentScript();
     }
 }
@@ -43,7 +44,7 @@ function addBlackFilterToContainerImages() {
         // 根據 localStorage 的紀錄設置灰階效果
         const img = link.querySelector(".theme-img");
         img.style.filter = isDisliked ? "grayscale(100%)" : "none";
-        img.style.opacity = isDisliked ? "0.15" : "1";
+        img.style.opacity = isDisliked ? "0.1" : "1";
 
         const container = link.querySelector(".theme-img-block");
 
@@ -103,7 +104,7 @@ function addBlackFilterToContainerImages() {
 function updateImageStyle(img, isDisliked) {
     // 根據當前狀態更新圖片樣式
     img.style.filter = isDisliked ? "grayscale(100%)" : "none";
-    img.style.opacity = isDisliked ? "0.15" : "1";
+    img.style.opacity = isDisliked ? "0.1" : "1";
 }
 
 // 啟動 URL 觀察器並立即檢查

@@ -9,7 +9,8 @@
   "content_scripts": [
     {
       "matches": [
-        "https://ani.gamer.com.tw/animeList.php*"
+        "https://ani.gamer.com.tw/animeList.php*",
+        "https://ani.gamer.com.tw/search.php*"
       ],
       "js": [
         "content.js"
