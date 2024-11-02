@@ -46,6 +46,14 @@ Implements the main functionality of the extension. Key functions:
 - Hover over an anime image to see a dislike button.
 - Click the button to toggle the dislike status. Disliked images will appear faded and grayscaled.
 
+### Example Images
+
+**Before Dislike:**
+![Original Image](https://imgur.com/OjnPAUj)
+
+**After Dislike:**
+![Disliked Image](https://imgur.com/qXRlIfF)
+
 ## License
 
 This project is open-source and available under the MIT License.
