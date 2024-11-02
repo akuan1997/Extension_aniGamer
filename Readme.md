@@ -49,7 +49,7 @@ Implements the main functionality of the extension. Key functions:
 ### Example Images
 
 **Before Dislike:**
-![Original Image](example_images/original_image.png)
+![Original Image](example_images/disliked_image.png)
 
 **After Dislike:**
 ![Disliked Image](exapmle_images/disliked_image.png)
