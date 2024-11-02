@@ -49,10 +49,10 @@ Implements the main functionality of the extension. Key functions:
 ### Example Images
 
 **Before Dislike:**
-![Original Image](example_images/original_image)
+![Original Image](example_images/original_image.png)
 
 **After Dislike:**
-![Disliked Image](exapmle_images/disliked_image)
+![Disliked Image](exapmle_images/disliked_image.png)
 
 ## License
 
