@@ -16,7 +16,6 @@ function observerCallback() {
 // 初始化內容腳本功能
 function initContentScript() {
     addBlackFilterToContainerImages();
-    // addTriangleBelowFavorites();
 
     // 監測 DOM 變化並更新愛心
     const domObserver = new MutationObserver((mutations) => {
@@ -32,6 +31,7 @@ function initContentScript() {
 }
 
 function addBlackFilterToContainerImages() {
+    // 提取每一個動畫物件
     const containerLinks = document.querySelectorAll(".theme-list-main");
 
     containerLinks.forEach((link) => {
